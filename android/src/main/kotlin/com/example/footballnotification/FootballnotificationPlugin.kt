@@ -1,18 +1,14 @@
 package com.example.footballnotification
 
 import android.app.Activity
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.startForegroundService
+import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Mybackground
-import com.example.backgroundservice.Notification.Livematchnotification.LiveNotificationShow
-import com.example.backgroundservice.Notification.Livematchnotification.Notification2
-
+import com.example.backgroundservice.Retrofit_heloer.Retrofithelper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -42,16 +38,18 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       var goal : Boolean? = call.argument("goal");
       var card : Boolean? = call.argument("card");
       var subst : Boolean? = call.argument("subst");
-      println(call.argument("matchid"))
+      var token : String ? = call.argument("token");
+      var matchid : ArrayList<Int>? = call.argument("matchid")
+
 //      var intent: Intent = Intent();
       context = activity.applicationContext;
       var service = Intent(context, Mybackground::class.java)
       service.putExtra("goal",goal);
       service.putExtra("card",card);
       service.putExtra("subst",subst);
+      service.putExtra("token",token);
+      service.putExtra("matchid",matchid);
       activity.startForegroundService(service)
-
-
     } else {
 
     }

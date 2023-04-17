@@ -10,8 +10,8 @@ class MethodChannelFootballnotification extends FootballnotificationPlatform {
   final methodChannel = const MethodChannel('footballnotification');
 
   @override
-  Future getPlatformVersion(var matchid, bool goal, bool card, bool subset) async {
+  Future getPlatformVersion(var matchid, bool goal, bool card, bool subset, String token) async {
     await methodChannel.invokeMethod<String>('getPlatformVersion',
-        {"matchid": matchid, "goal": false, "card": true, "subst": false});
+        {"matchid": matchid, "goal": goal, "card": card, "subst": subset, "token": token});
   }
 }

@@ -23,7 +23,7 @@ abstract class FootballnotificationPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future getPlatformVersion(var matchid,bool goal, bool card, bool subset) {
+  Future getPlatformVersion(var matchid,bool goal, bool card, bool subset, String token) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

@@ -40,9 +40,13 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _footballnotificationPlugin.getPlatformVersion([980893, 980894, 981258, 995005, 995421, 995422]) ??
-              'Unknown platform version';
+      platformVersion = await _footballnotificationPlugin.getPlatformVersion(
+              [1016040],
+              true,
+              true,
+              true,
+              "") ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }

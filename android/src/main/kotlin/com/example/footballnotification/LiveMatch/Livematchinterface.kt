@@ -1,12 +1,17 @@
 package com.example.backgroundservice.Api_Interface.LiveMatch
 
 import com.example.backgroundservice.Model.Live.Livematch
+import com.example.footballnotification.SingleMatch.SingleMatchDetails
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Headers
+import retrofit2.http.*
 
 interface Livematchinterface {
-    @Headers("ab: live-soccer-tv-footballl-live-tv")
-    @GET("fixtures/live")
-    suspend fun getQuotes() : Response<Livematch>
+
+//    @GET("fixtures/live")
+//    suspend fun getQuotes(@Header("ab") token: String) : Response<Livematch>
+
+    @GET("fixtures/{id}")
+    suspend fun getQuotes(@Path("id") id: String ,@Header("ab") token: String) : Response<Livematch>
+
+
 }
