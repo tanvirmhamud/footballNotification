@@ -1,6 +1,7 @@
 package com.example.footballnotification
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -43,16 +44,42 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
 //      var intent: Intent = Intent();
       context = activity.applicationContext;
-      var service = Intent(context, Mybackground::class.java)
-      service.putExtra("goal",goal);
-      service.putExtra("card",card);
-      service.putExtra("subst",subst);
-      service.putExtra("token",token);
-      service.putExtra("matchid",matchid);
-      activity.startForegroundService(service)
+      if (isMyServiceRunning(Mybackground::class.java) == false){
+        var service = Intent(context, Mybackground::class.java)
+        service.putExtra("goal",goal);
+        service.putExtra("card",card);
+        service.putExtra("subst",subst);
+        service.putExtra("token",token);
+        service.putExtra("matchid",matchid);
+        activity.startForegroundService(service)
+      }else{
+        var service = Intent(context, Mybackground::class.java)
+        activity.stopService(service);
+        service.putExtra("goal",goal);
+        service.putExtra("card",card);
+        service.putExtra("subst",subst);
+        service.putExtra("token",token);
+        service.putExtra("matchid",matchid);
+        activity.startForegroundService(service)
+      }
+
+
     } else {
 
     }
+  }
+
+
+
+
+  private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+    val manager: ActivityManager =activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+      if (serviceClass.name == service.service.getClassName()) {
+        return true
+      }
+    }
+    return false
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
