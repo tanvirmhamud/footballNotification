@@ -51,7 +51,7 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("subst",subst);
         service.putExtra("token",token);
         service.putExtra("matchid",matchid);
-        activity.startForegroundService(service)
+        activity.startService(service)
       }else{
         var service = Intent(context, Mybackground::class.java)
         activity.stopService(service);
@@ -60,7 +60,7 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("subst",subst);
         service.putExtra("token",token);
         service.putExtra("matchid",matchid);
-        activity.startForegroundService(service)
+        activity.startService(service)
       }
 
 
