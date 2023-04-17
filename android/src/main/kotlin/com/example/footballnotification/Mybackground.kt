@@ -80,7 +80,6 @@ class Mybackground() : Service() {
 
 
     suspend fun counter() {
-            var job1 = CoroutineScope(Dispatchers.Main).async {
                 for (ids in matchid) {
                     val quotesApi =
                         Retrofithelper.getInstance().create(Livematchinterface::class.java)
@@ -98,9 +97,8 @@ class Mybackground() : Service() {
                     println("${job2.await()}")
 
                 }
-                "job1 complete"
-            }
-            println("${job1.await()}")
+
+
 
 
 

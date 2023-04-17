@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
@@ -92,15 +93,15 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
-    TODO("Not yet implemented")
+    Log.d("TAG", "onAttachedToService");
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-    TODO("Not yet implemented")
+    Log.d("TAG", "onAttachedToService");
   }
 
   override fun onDetachedFromActivity() {
-    TODO("Not yet implemented")
+    Log.d("g", "onAttachedToService");
   }
 
 }
