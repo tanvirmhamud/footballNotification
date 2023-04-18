@@ -88,7 +88,6 @@ class Mybackground() : Service() {
                         if (result!!.first().fixture.status.short == "NS"){
                             matchstartnotification(result!!.first())
                         }
-
                         if (result!!.first().events.isNotEmpty()) {
                             goalnotification(result!!.first());
                         }
@@ -136,25 +135,25 @@ class Mybackground() : Service() {
     fun goalnotification(livematch : LivematchItem) {
         var goaldata : String = "${livematch.fixture.id}";
         if (getsavedata(goaldata) == null){
-           savedata(goaldata, livematch.events.size.toString())
+           savedata(goaldata, livematch.fixture.status.elapsed.toString())
         }else{
-            if (getsavedata(goaldata) ==  livematch.events.size.toString()){
+            if (getsavedata(goaldata) ==  livematch.fixture.status.elapsed.toString()){
                 println("previous data")
-                savedata(goaldata, livematch.events.size.toString())
+                savedata(goaldata, livematch.fixture.status.elapsed.toString())
             }else{
                 var type = livematch.events.last().type;
                 if (type == "Goal" && goal == true) {
                     var details = "${livematch.teams.home.name} ${livematch.goals.home} - ${livematch.goals.away} ${livematch.teams.away.name}"
                     Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }else if (type == "Card" && card == true){
                     var details = "${livematch.events.last().player.name} ${livematch.events.last().detail}"
                     Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }else if(type == "subst" && subset == true) {
                     var details = "${livematch.events.last().detail}"
                     Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }
                 println("new data data")
             }
