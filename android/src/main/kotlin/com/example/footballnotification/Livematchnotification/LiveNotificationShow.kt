@@ -41,6 +41,7 @@ class Notification2{
              .setContentText(details)
              .setLargeIcon(bitmap)
              .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
              // Set the intent that will fire when the user taps the notification
              .setAutoCancel(true)
 
