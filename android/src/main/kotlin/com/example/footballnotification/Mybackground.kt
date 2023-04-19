@@ -134,26 +134,36 @@ class Mybackground() : Service() {
 
     fun goalnotification(livematch : LivematchItem) {
         var goaldata : String = "${livematch.fixture.id}";
+        var leagename: String = livematch.league.name;
+
+        var matchid : Int = livematch.fixture.id;
+        var teama : Int = livematch.teams.home.id;
+        var teamb : Int = livematch.teams.away.id;
+        var teamaname : String = livematch.teams.home.name;
+        var teambname : String = livematch.teams.away.name;
+        var season : Int = livematch.league.season;
+
+
         if (getsavedata(goaldata) == null){
-           savedata(goaldata, livematch.events.size.toString())
+           savedata(goaldata, livematch.fixture.status.elapsed.toString())
         }else{
-            if (getsavedata(goaldata) ==  livematch.events.size.toString()){
+            if (getsavedata(goaldata) ==  livematch.fixture.status.elapsed.toString()){
                 println("previous data")
-                savedata(goaldata, livematch.events.size.toString())
+                savedata(goaldata, livematch.fixture.status.elapsed.toString())
             }else{
                 var type = livematch.events.last().type;
                 if (type == "Goal" && goal == true) {
                     var details = "${livematch.teams.home.name} ${livematch.goals.home} - ${livematch.goals.away} ${livematch.teams.away.name}"
-                    Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }else if (type == "Card" && card == true){
                     var details = "${livematch.events.last().player.name} ${livematch.events.last().detail}"
-                    Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo)
-                    savedata(goaldata, livematch.events.size.toString())
+                    Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                    savedata(goaldata, livematch.fixture.status.elapsed.toString())
                 }else if(type == "subst" && subset == true) {
                     var details = "${livematch.events.last().detail}"
-                    Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }
                 println("new data data")
             }
@@ -166,6 +176,7 @@ class Mybackground() : Service() {
     fun matchstartnotification(livematch : LivematchItem) {
         val matchstamp = Timestamp((livematch.fixture.timestamp).toLong()) // from java.sql.timestamp
         val matchdate = Date(matchstamp.time * 1000)
+        var leagename: String = livematch.league.name;
 
         val stamp = Timestamp(System.currentTimeMillis()) // from java.sql.timestamp
         val date = Date(stamp.time)
@@ -175,14 +186,22 @@ class Mybackground() : Service() {
         val minutes = seconds / 60
         val hours = minutes / 60
         val days = hours / 24
-        println("${days}:${hours}:${minutes}:${seconds}")
+
+
+
+        var matchid : Int = livematch.fixture.id;
+        var teama : Int = livematch.teams.home.id;
+        var teamb : Int = livematch.teams.away.id;
+        var teamaname : String = livematch.teams.home.name;
+        var teambname : String = livematch.teams.away.name;
+        var season : Int = livematch.league.season;
 
 
         var id : String = "${livematch.fixture.id}";
         var type = "${livematch.teams.home.name} vs ${livematch.teams.away.name}";
         if (minutes < 5 && minutes > 0 && (getsavedata(id) == null || getsavedata(id) != "${livematch.fixture.timestamp}")) {
             var details = "Live Now: ${matchdate.toLocaleString()}"
-            Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo);
+            Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season);
             savedata(id, "${livematch.fixture.timestamp}")
         }
 

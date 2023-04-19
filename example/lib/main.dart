@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+// ignore_for_file: await_only_futures
 
+import 'package:flutter/material.dart' hide Intent;
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:footballnotification/footballnotification.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:receive_intent/receive_intent.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,45 +21,46 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _footballnotificationPlugin = Footballnotification();
 
-  Future permissioncheck() async {
-    final status = await Permission.notification.status;
-    if (status.isDenied) {
-      await Permission.notification.request();
-    } else {
-      print(status.toString());
-    }
-  }
+  Intent? initialIntent;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
+
     try {
       platformVersion = await _footballnotificationPlugin.getPlatformVersion(
-              [1016040],
-              true,
-              true,
-              true,
-              "") ??
+              [872444, 907537, 907678], true, true, true, "") ??
           'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
       _platformVersion = platformVersion;
     });
+  }
+
+  Future<void> _init() async {
+    final receivedIntent = await ReceiveIntent.getInitialIntent();
+
+    if (!mounted) return;
+
+    setState(() {
+      initialIntent = receivedIntent;
+      print(initialIntent!.extra);
+    });
+  }
+
+  @override
+  void initState() {
+    _init();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -81,13 +83,32 @@ class _MyAppState extends State<MyApp> {
             ),
             MaterialButton(
               color: Colors.indigo,
-              onPressed: () {
-                permissioncheck();
-              },
+              onPressed: () {},
               child: Text("Notification Permission"),
-            )
+            ),
+            _buildFromIntent("INITIAL", initialIntent!),
+            // StreamBuilder<Intent?>(
+            //   stream: ReceiveIntent.receivedIntentStream,
+            //   builder: (context, snapshot) =>
+            //       _buildFromIntent("STREAMED", snapshot.data!),
+            // )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFromIntent(String label, Intent intent) {
+    return Center(
+      child: Column(
+        children: [
+          Text(label),
+          Text(
+              "fromPackage: ${intent.fromPackageName}\nfromSignatures: ${intent.fromSignatures}"),
+          Text(
+              'action: ${intent.action}\ndata: ${intent.data}\ncategories: ${intent.categories}'),
+          Text("extras: ${intent.extra}")
+        ],
       ),
     );
   }
