@@ -157,11 +157,11 @@ class Mybackground() : Service() {
                     Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
                     savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }else if (type == "Card" && card == true){
-                    var details = "${livematch.events.last().player.name} ${livematch.events.last().detail}"
+                    var details = "${livematch.events.last().player.name ?: "someone" } got ${livematch.events.last().detail}"
                     Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
                     savedata(goaldata, livematch.fixture.status.elapsed.toString())
                 }else if(type == "subst" && subset == true) {
-                    var details = "${livematch.events.last().detail}"
+                    var details = "${livematch.events.last().player.name  ?: "someone"} ${livematch.events.last().detail}"
                     Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
                     savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }
