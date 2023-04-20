@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
 
     try {
       platformVersion = await _footballnotificationPlugin.getPlatformVersion(
-              [872444, 907537, 907678], true, true, true, "") ??
+              [1015107, 973199, 973202], true, true, true, "") ??
           'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
@@ -54,7 +54,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     _init();
-
     super.initState();
   }
 
