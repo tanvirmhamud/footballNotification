@@ -17,6 +17,7 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.bumptech.glide.Glide
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Model.Live.LivematchItem
 import com.example.backgroundservice.Notification.Livematchnotification.Notification2
@@ -74,11 +75,17 @@ class Mybackground() : Service() {
         var title : String = "${getAppLable(this)} is running in the background";
         val titleBold: Spannable = SpannableString(title)
         titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val futureTarget = Glide.with(context)
+            .asBitmap()
+            .load(R.mipmap.ic_launcher)
+            .submit()
+        val bitmap = futureTarget.get()
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
             .setContentText("Tab for details on battery and data usage")
             .setContentTitle(titleBold)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setLargeIcon(bitmap)
             .setAutoCancel(true);
         startForeground(1001, notification.build())
         val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
