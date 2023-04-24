@@ -67,8 +67,8 @@ class Mybackground() : Service() {
 
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
-            .setContentText("Background Service ")
-            .setContentTitle("Background Servoce")
+            .setContentText("Tab for details on battery and data usage")
+            .setContentTitle("${this.applicationInfo.name} is running in the background")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setAutoCancel(true);
         startForeground(1001, notification.build())
@@ -147,23 +147,23 @@ class Mybackground() : Service() {
         if (getsavedata(goaldata) == null){
            savedata(goaldata, livematch.fixture.status.elapsed.toString())
         }else{
-            if (getsavedata(goaldata) ==  livematch.fixture.status.elapsed.toString()){
+            if (getsavedata(goaldata) ==  livematch.events.size.toString()){
                 println("previous data")
-                savedata(goaldata, livematch.fixture.status.elapsed.toString())
+                savedata(goaldata, livematch.events.size.toString())
             }else{
                 var type = livematch.events.last().type;
                 if (type == "Goal" && goal == true) {
                     var details = "${livematch.teams.home.name} ${livematch.goals.home} - ${livematch.goals.away} ${livematch.teams.away.name}"
                     Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
+                    savedata(goaldata,  livematch.events.size.toString())
                 }else if (type == "Card" && card == true){
                     var details = "${livematch.events.last().player.name ?: "someone" } got ${livematch.events.last().detail}"
                     Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata, livematch.fixture.status.elapsed.toString())
+                    savedata(goaldata, livematch.events.size.toString())
                 }else if(type == "subst" && subset == true) {
                     var details = "${livematch.events.last().player.name  ?: "someone"} ${livematch.events.last().detail}"
                     Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
+                    savedata(goaldata,  livematch.events.size.toString())
                 }
                 println("new data data")
             }
