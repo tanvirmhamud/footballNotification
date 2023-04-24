@@ -6,9 +6,12 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Model.Live.LivematchItem
@@ -68,13 +71,27 @@ class Mybackground() : Service() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
             .setContentText("Tab for details on battery and data usage")
-            .setContentTitle("${this.applicationInfo.name} is running in the background")
+            .setContentTitle("${getAppLable(this)} is running in the background")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setAutoCancel(true);
         startForeground(1001, notification.build())
         val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         mNotificationManager.cancel(1001)
         return super.onStartCommand(intent, flags, startId)
+    }
+
+
+    fun getAppLable(context: Context): CharSequence {
+        var applicationInfo: ApplicationInfo? = null
+        try {
+            applicationInfo = context.packageManager.getApplicationInfo(
+                context.applicationInfo.packageName,
+                0
+            )
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.d("TAG", "The package with the given name cannot be found on the system.")
+        }
+        return if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "Unknown"
     }
 
 
