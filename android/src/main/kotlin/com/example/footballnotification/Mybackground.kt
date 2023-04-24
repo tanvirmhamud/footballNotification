@@ -8,9 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
@@ -67,11 +71,13 @@ class Mybackground() : Service() {
             CHANNELID,
             NotificationManager.IMPORTANCE_NONE
         )
-
+        var title : String = "${getAppLable(this)} is running in the background";
+        val titleBold: Spannable = SpannableString(title)
+        titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
             .setContentText("Tab for details on battery and data usage")
-            .setContentTitle("${getAppLable(this)} is running in the background")
+            .setContentTitle(titleBold)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setAutoCancel(true);
         startForeground(1001, notification.build())
