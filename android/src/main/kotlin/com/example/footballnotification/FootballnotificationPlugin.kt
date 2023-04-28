@@ -42,6 +42,8 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       var subst : Boolean? = call.argument("subst");
       var token : String ? = call.argument("token");
       var matchid : ArrayList<Int>? = call.argument("matchid")
+      var teamid : ArrayList<Int>? = call.argument("teamid")
+      var season : ArrayList<Int>? = call.argument("season")
 
 //      var intent: Intent = Intent();
       context = activity.applicationContext;
@@ -52,6 +54,8 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("subst",subst);
         service.putExtra("token",token);
         service.putExtra("matchid",matchid);
+        service.putExtra("teamid",teamid);
+        service.putExtra("season",season);
         activity.startService(service)
       }else{
         var service = Intent(context, Mybackground::class.java)
@@ -61,6 +65,8 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("subst",subst);
         service.putExtra("token",token);
         service.putExtra("matchid",matchid);
+        service.putExtra("teamid",teamid);
+        service.putExtra("season",season);
         activity.startService(service)
       }
 

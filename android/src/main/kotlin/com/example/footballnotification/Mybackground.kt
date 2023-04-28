@@ -38,6 +38,8 @@ class Mybackground() : Service() {
     var subset : Boolean = false;
     lateinit var token: String;
     lateinit var matchid : ArrayList<Int>;
+    lateinit var teamid : ArrayList<Int>;
+    lateinit var season : ArrayList<Int>;
     var livematchdata = "livematchdata";
     lateinit var context: Context
 
@@ -54,7 +56,9 @@ class Mybackground() : Service() {
         subset = intent!!.getBooleanExtra("subst", false);
         token = intent!!.getStringExtra("token").toString();
         matchid = intent.getIntegerArrayListExtra("matchid") as ArrayList<Int>
-        println("${goal} ${token} ${matchid}")
+        teamid = intent.getIntegerArrayListExtra("teamid") as ArrayList<Int>
+        season = intent.getIntegerArrayListExtra("season") as ArrayList<Int>
+        println("${goal} ${token} ${matchid} ${teamid} ${season}")
         var t = 0
         handler = Handler();
         handler.postDelayed(object : Runnable {
@@ -127,25 +131,23 @@ class Mybackground() : Service() {
 
                 }
 
+                for (ids in teamid.indices){
+                    val quotesApi =
+                        Retrofithelper.getInstance().create(Livematchinterface::class.java)
+                    var result = quotesApi.getteamfixture("${teamid[ids]}","${season[ids]}",token).body();
+                    var job2 = CoroutineScope(Dispatchers.Main).async {
+                        for (i in result!!){
+                            if (i.fixture.status.short == "NS"){
+                                matchstartnotification(i)
+                            }
+                        }
+                        "job3 round complete"
+                    }
+                    println("${job2.await()}")
+
+                }
 
 
-
-
-//        var job1 = CoroutineScope(Dispatchers.Main).async {
-//            val quotesApi = Retrofithelper.getInstance().create(Livematchinterface::class.java)
-//            var result = quotesApi.getQuotes(token).body();
-//                for (item in result!!.indices){
-//                    var job2 = CoroutineScope(Dispatchers.Main).async {
-//                        if (result[item].events.isNotEmpty()){
-//                            goalnotification(result[item]);
-//                        }
-//                        "round complete"
-//                    }
-//                    println("${job2.await()}")
-//                }
-//            result.size
-//        }
-//        println(job1.await());
     }
 
 
@@ -216,9 +218,6 @@ class Mybackground() : Service() {
         val minutes = seconds / 60
         val hours = minutes / 60
         val days = hours / 24
-
-
-
         var matchid : Int = livematch.fixture.id;
         var teama : Int = livematch.teams.home.id;
         var teamb : Int = livematch.teams.away.id;
@@ -228,8 +227,9 @@ class Mybackground() : Service() {
 
 
         var id : String = "${livematch.fixture.id}";
+
         var type = "${livematch.teams.home.name} vs ${livematch.teams.away.name}";
-        if (minutes < 5 && minutes > 0 && (getsavedata(id) == null || getsavedata(id) != "${livematch.fixture.timestamp}")) {
+        if (minutes < 3 && minutes > 0 && (getsavedata(id) == null || getsavedata(id) != "${livematch.fixture.timestamp}")) {
             var details = "Live Now: ${matchdate.toLocaleString()}"
             Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season);
             savedata(id, "${livematch.fixture.timestamp}")
