@@ -60,7 +60,7 @@ class Notification2{
          }
 
          val builder = NotificationCompat.Builder(context, CHANNELID)
-             .setSmallIcon(context.applicationInfo.icon)
+             .setSmallIcon(R.mipmap.ic_launcher)
              .setContentTitle(titleBold)
              .setContentText(details)
              .setLargeIcon(bitmap)

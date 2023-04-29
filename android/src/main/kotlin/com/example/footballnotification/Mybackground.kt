@@ -1,6 +1,6 @@
 package com.example.backgroundservice
 
-import android.R
+
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -23,7 +23,7 @@ import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Model.Live.LivematchItem
 import com.example.backgroundservice.Notification.Livematchnotification.Notification2
 import com.example.backgroundservice.Retrofit_heloer.Retrofithelper
-
+import com.example.footballnotification.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -82,13 +82,13 @@ class Mybackground() : Service() {
         titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val icon = BitmapFactory.decodeResource(
             context.resources,
-            context.applicationInfo.icon
+            R.mipmap.ic_launcher
         )
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
             .setContentText("Tab for details on battery and data usage")
             .setContentTitle(titleBold)
-            .setSmallIcon(context.applicationInfo.icon)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(icon)
             .setAutoCancel(true);
         startForeground(1001, notification.build())
