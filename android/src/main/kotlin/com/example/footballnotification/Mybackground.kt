@@ -82,13 +82,13 @@ class Mybackground() : Service() {
         titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val icon = BitmapFactory.decodeResource(
             context.resources,
-            R.mipmap.sym_def_app_icon
+            context.applicationInfo.icon
         )
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
             .setContentText("Tab for details on battery and data usage")
             .setContentTitle(titleBold)
-            .setSmallIcon(R.mipmap.sym_def_app_icon)
+            .setSmallIcon(context.applicationInfo.icon)
             .setLargeIcon(icon)
             .setAutoCancel(true);
         startForeground(1001, notification.build())
