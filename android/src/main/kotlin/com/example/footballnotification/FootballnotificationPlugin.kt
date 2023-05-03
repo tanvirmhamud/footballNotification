@@ -65,7 +65,7 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("season",season);
 //        activity.startForegroundService(service)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          activity.startForegroundService(service)
+          activity.startService(service)
         } else {
           activity.startService(service)
         }
@@ -80,7 +80,7 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("teamid",teamid);
         service.putExtra("season",season);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          activity.startForegroundService(service)
+          activity.startService(service)
         } else {
           activity.startService(service)
         }
