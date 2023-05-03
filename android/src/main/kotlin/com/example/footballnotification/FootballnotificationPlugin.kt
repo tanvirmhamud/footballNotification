@@ -1,16 +1,17 @@
 package com.example.footballnotification
 
-import android.app.Activity
-import android.app.ActivityManager
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.util.Log
+import android.widget.RemoteViews
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Mybackground
-import com.example.backgroundservice.Retrofit_heloer.Retrofithelper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -28,6 +29,11 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   private lateinit var channel : MethodChannel
   private lateinit var context: Context
   private lateinit var activity: Activity
+  lateinit var notificationManager: NotificationManager
+  lateinit var notificationChannel: NotificationChannel
+  lateinit var builder: Notification.Builder
+  private val channelId = "i.apps.notifications"
+  private val description = "Test notification"
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "footballnotification")
@@ -75,6 +81,9 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
     }
   }
+
+
+
 
 
 

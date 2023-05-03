@@ -28,11 +28,11 @@ class _MyAppState extends State<MyApp> {
 
     try {
       platformVersion = await _footballnotificationPlugin.getPlatformVersion(
-              card: false,
-              goal: false,
-              matchid: [883536,],
+              card: true,
+              goal: true,
+              matchid: [995047, 1022068],
               season: [2022],
-              subset: false,
+              subset: true,
               teamid: [48],
               token: "super-sports-live-cricket-matches-ios-version") ??
           'Unknown platform version';

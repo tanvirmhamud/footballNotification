@@ -1,16 +1,15 @@
 package com.example.backgroundservice
 
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -19,6 +18,9 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Model.Live.LivematchItem
 import com.example.backgroundservice.Notification.Livematchnotification.Notification2
@@ -29,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.sql.Date
 import java.sql.Timestamp
+import kotlin.random.Random
 
 
 class Mybackground() : Service() {
@@ -42,6 +45,11 @@ class Mybackground() : Service() {
     lateinit var season : ArrayList<Int>;
     var livematchdata = "livematchdata";
     lateinit var context: Context
+    lateinit var notificationManager: NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    lateinit var builder: Notification.Builder
+    private val channelId = "i.apps.notifications"
+    private val description = "Test notification"
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
@@ -179,23 +187,23 @@ class Mybackground() : Service() {
         if (getsavedata(goaldata) == null){
            savedata(goaldata, livematch.fixture.status.elapsed.toString())
         }else{
-            if (getsavedata(goaldata) ==  livematch.events.size.toString()){
+            if (getsavedata(goaldata) ==  livematch.fixture.status.elapsed.toString()){
                 println("previous data")
-                savedata(goaldata, livematch.events.size.toString())
+                savedata(goaldata, livematch.fixture.status.elapsed.toString())
             }else{
                 var type = livematch.events.last().type;
                 if (type == "Goal" && goal == true) {
                     var details = "${livematch.teams.home.name} ${livematch.goals.home} - ${livematch.goals.away} ${livematch.teams.away.name}"
-                    Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    sendnotification("⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }else if (type == "Card" && card == true){
                     var details = "${livematch.events.last().player.name ?: "someone" } got ${livematch.events.last().detail}"
-                    Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata, livematch.events.size.toString())
+                    sendnotification("$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                    savedata(goaldata, livematch.fixture.status.elapsed.toString())
                 }else if(type == "subst" && subset == true) {
                     var details = "${livematch.events.last().player.name  ?: "someone"} ${livematch.events.last().detail}"
-                    Notification2().createNotificationChannel(context,"$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata,  livematch.events.size.toString())
+                    sendnotification("$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }
                 println("new data data")
             }
@@ -231,12 +239,73 @@ class Mybackground() : Service() {
         var type = "${livematch.teams.home.name} vs ${livematch.teams.away.name}";
         if (minutes < 3 && minutes > 0 && (getsavedata(id) == null || getsavedata(id) != "${livematch.fixture.timestamp}")) {
             var details = "Live Now: ${matchdate.toLocaleString()}"
-            Notification2().createNotificationChannel(context,"⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season);
+            sendnotification("⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season);
             savedata(id, "${livematch.fixture.timestamp}")
         }
 
     }
 
 
+
+    fun sendnotification(title: String, details: String, photourl : String, leaguename: String, matchid : Int, teama: Int, teamb: Int, teamaname: String, teambname : String, season : Int) {
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        var number : Int = Random.nextInt(0, 99999999);
+        val titleBold: Spannable = SpannableString(title)
+        titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val futureTarget = Glide.with(context)
+            .asBitmap()
+            .load(photourl)
+            .submit()
+        val bitmap = futureTarget.get()
+        val icon: Drawable =
+            context.packageManager.getApplicationIcon(context.packageName)
+
+        val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName);
+
+        launchIntent!!.putExtra("matchid", matchid);
+        launchIntent.putExtra("teama", teama);
+        launchIntent.putExtra("teamb", teamb);
+        launchIntent.putExtra("teamaname",teamaname);
+        launchIntent.putExtra("teambname",teambname);
+        launchIntent.putExtra("season", season);
+
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(launchIntent)
+
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(number,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationChannel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.GREEN
+            notificationChannel.enableVibration(false)
+            notificationManager.createNotificationChannel(notificationChannel)
+            builder = Notification.Builder(this, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(titleBold)
+                .setContentText(details)
+                .setLargeIcon(bitmap)
+                .setSubText(leaguename)
+                .setContentIntent(resultPendingIntent)
+                .setAutoCancel(true)
+
+
+        } else {
+
+            builder = Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(titleBold)
+                .setContentText(details)
+                .setLargeIcon(bitmap)
+                .setSubText(leaguename)
+                .setContentIntent(resultPendingIntent)
+                .setAutoCancel(true)
+        }
+        notificationManager.notify(number, builder.build())
+    }
 
 }
