@@ -48,12 +48,13 @@ class Mybackground() : Service() {
     lateinit var notificationManager: NotificationManager
     lateinit var notificationChannel: NotificationChannel
     lateinit var builder: Notification.Builder
-    private val channelId = "i.apps.notifications"
+    private val channelId = "${Random.nextInt(0, 9999999)}ghvas"
     private val description = "Test notification"
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
     }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -96,6 +97,7 @@ class Mybackground() : Service() {
         val notification: Notification.Builder = Notification.Builder(this, CHANNELID)
             .setContentText("Tab for details on battery and data usage")
             .setContentTitle(titleBold)
+
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(icon)
             .setAutoCancel(true);
@@ -118,6 +120,7 @@ class Mybackground() : Service() {
         }
         return if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "Unknown"
     }
+
 
 
 
@@ -172,6 +175,7 @@ class Mybackground() : Service() {
     }
 
 
+
     fun goalnotification(livematch : LivematchItem) {
         var goaldata : String = "${livematch.fixture.id}";
         var leagename: String = livematch.league.name;
@@ -213,6 +217,7 @@ class Mybackground() : Service() {
     }
 
 
+
     fun matchstartnotification(livematch : LivematchItem) {
         val matchstamp = Timestamp((livematch.fixture.timestamp).toLong()) // from java.sql.timestamp
         val matchdate = Date(matchstamp.time * 1000)
@@ -244,6 +249,7 @@ class Mybackground() : Service() {
         }
 
     }
+
 
 
 
@@ -288,12 +294,11 @@ class Mybackground() : Service() {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(titleBold)
                 .setContentText(details)
+                .setChannelId(channelId)
                 .setLargeIcon(bitmap)
                 .setSubText(leaguename)
                 .setContentIntent(resultPendingIntent)
                 .setAutoCancel(true)
-
-
         } else {
 
             builder = Notification.Builder(this)
