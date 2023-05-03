@@ -18,6 +18,7 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.bumptech.glide.Glide
 
 import com.example.backgroundservice.Api_Interface.LiveMatch.Livematchinterface
 import com.example.backgroundservice.Model.Live.LivematchItem
@@ -122,12 +123,13 @@ class Mybackground() : Service() {
 
 
 
+
     suspend fun counter() {
                 for (ids in matchid) {
                     val quotesApi =
                         Retrofithelper.getInstance().create(Livematchinterface::class.java)
                     var result = quotesApi.getQuotes("id=${ids}", token).body();
-                    var job2 = CoroutineScope(Dispatchers.IO).async {
+                    var job2 = CoroutineScope(Dispatchers.Main).async {
                         if (result!!.first().fixture.status.short == "NS"){
                             matchstartnotification(result!!.first())
                         }
@@ -144,7 +146,7 @@ class Mybackground() : Service() {
                     val quotesApi =
                         Retrofithelper.getInstance().create(Livematchinterface::class.java)
                     var result = quotesApi.getteamfixture("${teamid[ids]}","${season[ids]}",token).body();
-                    var job2 = CoroutineScope(Dispatchers.IO).async {
+                    var job2 = CoroutineScope(Dispatchers.Main).async {
                         for (i in result!!){
                             if (i.fixture.status.short == "NS"){
                                 matchstartnotification(i)
@@ -175,6 +177,7 @@ class Mybackground() : Service() {
 
 
 
+
     fun goalnotification(livematch : LivematchItem) {
         var goaldata : String = "${livematch.fixture.id}";
         var leagename: String = livematch.league.name;
@@ -200,7 +203,7 @@ class Mybackground() : Service() {
                     savedata(goaldata,  livematch.fixture.status.elapsed.toString())
                 }else if (type == "Card" && card == true){
                     var details = "${livematch.events.last().player.name ?: "someone" } got ${livematch.events.last().detail}"
-                    createNotificationChannel("$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
+                   createNotificationChannel("$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
                     savedata(goaldata, livematch.fixture.status.elapsed.toString())
                 }else if(type == "subst" && subset == true) {
                     var details = "${livematch.events.last().player.name  ?: "someone"} ${livematch.events.last().detail}"
@@ -213,6 +216,7 @@ class Mybackground() : Service() {
         }
 
     }
+
 
 
 
@@ -270,11 +274,11 @@ class Mybackground() : Service() {
             var number : Int = Random.nextInt(0, 99999999);
             val titleBold: Spannable = SpannableString(title)
             titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//             val futureTarget = Glide.with(context)
-//                 .asBitmap()
-//                 .load(photourl)
-//                 .submit()
-//             val bitmap = futureTarget.get()
+             val futureTarget = Glide.with(this)
+                 .asBitmap()
+                 .load(photourl)
+                 .submit()
+             val bitmap = futureTarget.get()
             val icon: Drawable =
                 this.packageManager.getApplicationIcon(this.packageName)
 
@@ -301,6 +305,7 @@ class Mybackground() : Service() {
                  .setSmallIcon(R.mipmap.ic_launcher)
                  .setContentTitle(titleBold)
                  .setContentText(details)
+                 .setLargeIcon(bitmap)
                  .setSubText(leaguename)
                  .setChannelId(CHANNEL_ID)
                  .setPriority(Notification.PRIORITY_DEFAULT)
@@ -312,7 +317,7 @@ class Mybackground() : Service() {
             val notificationManager: NotificationManager =
                 this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-            notificationManager.notify(1011, builder)
+            notificationManager.notify(number, builder)
 
         }
 

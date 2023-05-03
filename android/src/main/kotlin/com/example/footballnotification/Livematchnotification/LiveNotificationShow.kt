@@ -22,20 +22,20 @@ import kotlin.random.Random
 
 
 class Notification2{
-     @RequiresApi(Build.VERSION_CODES.O)
+
      fun createNotificationChannel(context: Context, title: String, details: String, photourl : String, leaguename: String, matchid : Int, teama: Int, teamb: Int, teamaname: String, teambname : String, season : Int) {
              println("tanvir")
              var CHANNEL_ID : String = "CHANNEL_ID"
-
-             val name = "Channel Name"
-             val descriptionText = "Description"
-             val importance = NotificationManager.IMPORTANCE_DEFAULT
-             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                 description = descriptionText
-             }
-             channel.enableLights(true)
-             channel.lightColor = Color.GREEN
-             channel.enableVibration(true)
+//
+//             val name = "Channel Name"
+//             val descriptionText = "Description"
+//             val importance = NotificationManager.IMPORTANCE_DEFAULT
+//             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+//                 description = descriptionText
+//             }
+//             channel.enableLights(true)
+//             channel.lightColor = Color.GREEN
+//             channel.enableVibration(true)
 //
              var number : Int = Random.nextInt(0, 99999999);
              val titleBold: Spannable = SpannableString(title)

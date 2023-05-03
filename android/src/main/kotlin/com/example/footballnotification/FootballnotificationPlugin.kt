@@ -67,7 +67,7 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           activity.startForegroundService(service)
         } else {
-          activity.startForegroundService(service)
+          activity.startService(service)
         }
       }else{
         var service = Intent(context, Mybackground::class.java)
@@ -82,7 +82,7 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           activity.startForegroundService(service)
         } else {
-          activity.startForegroundService(service)
+          activity.startService(service)
         }
       }
 
