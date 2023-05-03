@@ -295,6 +295,7 @@ class Mybackground() : Service() {
                 .setContentTitle(titleBold)
                 .setContentText(details)
                 .setChannelId(channelId)
+
                 .setLargeIcon(bitmap)
                 .setSubText(leaguename)
                 .setContentIntent(resultPendingIntent)

@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       platformVersion = await _footballnotificationPlugin.getPlatformVersion(
               card: true,
               goal: true,
-              matchid: [995047, 1022068],
+              matchid: [1021170, 1022096],
               season: [2022],
               subset: true,
               teamid: [48],

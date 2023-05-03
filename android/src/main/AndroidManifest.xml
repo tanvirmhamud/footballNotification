@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <application>
 
-        <service android:name="com.example.backgroundservice.Mybackground"></service>
+        <service android:name="com.example.backgroundservice.Mybackground" android:enabled="true"></service>
 
     </application>
 </manifest>
