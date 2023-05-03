@@ -22,8 +22,8 @@ import kotlin.random.Random
 
 
 class Notification2{
+     @RequiresApi(Build.VERSION_CODES.O)
      fun createNotificationChannel(context: Context, title: String, details: String, photourl : String, leaguename: String, matchid : Int, teama: Int, teamb: Int, teamaname: String, teambname : String, season : Int) {
-         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
              println("tanvir")
              var CHANNEL_ID : String = "CHANNEL_ID"
 
@@ -40,11 +40,11 @@ class Notification2{
              var number : Int = Random.nextInt(0, 99999999);
              val titleBold: Spannable = SpannableString(title)
              titleBold.setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//             val futureTarget = Glide.with(context)
-//                 .asBitmap()
-//                 .load(photourl)
-//                 .submit()
-//             val bitmap = futureTarget.get()
+             val futureTarget = Glide.with(context)
+                 .asBitmap()
+                 .load(photourl)
+                 .submit()
+             val bitmap = futureTarget.get()
              val icon: Drawable =
                  context.packageManager.getApplicationIcon(context.packageName)
 
@@ -66,30 +66,30 @@ class Notification2{
                  getPendingIntent(number,
                      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
              }
+         val GROUP_KEY_WORK_EMAIL = "com.android.example.WORK_EMAIL"
+             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                 .setSmallIcon(R.mipmap.ic_launcher)
+                 .setContentTitle(titleBold)
+                 .setContentText(details)
+                 .setSubText(leaguename)
+                 .setChannelId(CHANNEL_ID)
+                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                 .setContentIntent(resultPendingIntent)
+                 .setGroup(GROUP_KEY_WORK_EMAIL)
+                 .setAutoCancel(true).build()
 
-//             val builder = Notification.Builder(context, CHANNEL_ID)
-//                 .setSmallIcon(R.mipmap.ic_launcher)
-//                 .setContentTitle(titleBold)
-//                 .setContentText(details)
-//                 .setSubText(leaguename)
-//                 .setChannelId(CHANNEL_ID)
-//                 .setPriority(Notification.PRIORITY_DEFAULT)
-//                 .setContentIntent(resultPendingIntent)
-//                 .setAutoCancel(true).build()
-             context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
-             var builder = Notification.Builder(context, CHANNEL_ID)
-                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                 .setContentTitle("ascascascas")
-                 .setContentText("sdvsvsvsdv")
-                 .build()
 
-             val notificationManager: NotificationManager =
-                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-             notificationManager.createNotificationChannel(channel)
+//             val notificationManager: NotificationManager =
+//                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//             notificationManager.createNotificationChannel(channel)
+//
+//                 notificationManager.notify(1011, builder)
 
-                 notificationManager.notify(1011, builder)
-
+         with(NotificationManagerCompat.from(context)) {
+             notify(number, builder)
          }
+
+
 
 
 

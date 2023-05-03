@@ -176,8 +176,6 @@ class Mybackground() : Service() {
 
 
     fun goalnotification(livematch : LivematchItem) {
-        createNotificationChannel("⚽️ type","details","livematch.league.logo","leagename",1254,85, 98, "teamaname", "teambname", 2022)
-
         var goaldata : String = "${livematch.fixture.id}";
         var leagename: String = livematch.league.name;
 
@@ -192,8 +190,6 @@ class Mybackground() : Service() {
            savedata(goaldata, livematch.fixture.status.elapsed.toString())
         }else{
             if (getsavedata(goaldata) ==  livematch.fixture.status.elapsed.toString()){
-//                createNotificationChannel("⚽️ type","details","livematch.league.logo","leagename",1254,85, 98, "teamaname", "teambname", 2022)
-//
                 println("previous data")
                 savedata(goaldata, livematch.fixture.status.elapsed.toString())
             }else{
