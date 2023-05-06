@@ -137,11 +137,6 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
   @RequiresApi(Build.VERSION_CODES.O)
   fun notificationsend() {
-
-
-
-
-    println("sdsdvsdvsvvsdvsdv")
     var CHANNEL_ID : String = "CHANNEL_ID"
 
     val name = "Channel Name"

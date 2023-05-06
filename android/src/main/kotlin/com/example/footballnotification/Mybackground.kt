@@ -210,25 +210,25 @@ class Mybackground() : Service() {
         var season : Int = livematch.league.season;
 
         if (getsavedata(goaldata) == null){
-           savedata(goaldata, livematch.fixture.status.elapsed.toString())
+           savedata(goaldata, livematch.events.size.toString())
         }else{
-            if (getsavedata(goaldata) ==  livematch.fixture.status.elapsed.toString()){
+            if (getsavedata(goaldata) ==  livematch.events.size.toString()){
                 println("previous data")
-                savedata(goaldata, livematch.fixture.status.elapsed.toString())
+                savedata(goaldata, livematch.events.size.toString())
             }else{
                 var type = livematch.events.last().type;
                 if (type == "Goal" && goal == true) {
                     var details = "${livematch.teams.home.name} ${livematch.goals.home} - ${livematch.goals.away} ${livematch.teams.away.name}"
                     createNotificationChannel("⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
+                    savedata(goaldata,  livematch.events.size.toString())
                 }else if (type == "Card" && card == true){
                     var details = "${livematch.events.last().player.name ?: "someone" } got ${livematch.events.last().detail}"
                    createNotificationChannel("$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata, livematch.fixture.status.elapsed.toString())
+                    savedata(goaldata, livematch.events.size.toString())
                 }else if(type == "subst" && subset == true) {
                     var details = "${livematch.events.last().player.name  ?: "someone"} ${livematch.events.last().detail}"
                     createNotificationChannel("$type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season)
-                    savedata(goaldata,  livematch.fixture.status.elapsed.toString())
+                    savedata(goaldata,  livematch.events.size.toString())
                 }
                 println("new data data")
             }
