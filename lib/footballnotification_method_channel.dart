@@ -11,21 +11,30 @@ class MethodChannelFootballnotification extends FootballnotificationPlatform {
 
   @override
   Future getPlatformVersion(
-      {List<int>? matchid,
-      bool? goal,
-      bool? card,
-      bool? subset,
-      String? token,
-      List<int>? teamid,
-      List<int>? season}) async {
-    await methodChannel.invokeMethod<String>('getPlatformVersion', {
-      "matchid": matchid,
-      "goal": goal,
-      "card": card,
-      "subst": subset,
-      "token": token,
-      "teamid": teamid,
-      "season": season
-    });
+      {required List<int> matchid,
+      required bool goal,
+      required bool card,
+      required bool subset,
+      required String token,
+      required List<int> teamid,
+      required List<int> season,
+      required bool matchstart,
+      required int time,
+      required bool notification}) async {
+    if (notification == true) {
+      await methodChannel.invokeMethod<String>('getPlatformVersion', {
+        "matchid": matchid,
+        "goal": goal,
+        "card": card,
+        "subst": subset,
+        "token": token,
+        "teamid": teamid,
+        "season": season,
+        "matchstart": matchstart,
+        "time": time
+      });
+    } else {
+      await methodChannel.invokeMethod<String>('notificatonoff');
+    }
   }
 }

@@ -34,7 +34,10 @@ class _MyAppState extends State<MyApp> {
               season: [2022],
               subset: true,
               teamid: [48],
-              token: "") ??
+              matchstart: true,
+              notification: false,
+              time: 3,
+              token: "live-soccer-tv-footballl-live-tv") ??
           'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';

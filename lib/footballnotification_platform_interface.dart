@@ -8,7 +8,8 @@ abstract class FootballnotificationPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static FootballnotificationPlatform _instance = MethodChannelFootballnotification();
+  static FootballnotificationPlatform _instance =
+      MethodChannelFootballnotification();
 
   /// The default instance of [FootballnotificationPlatform] to use.
   ///
@@ -23,8 +24,18 @@ abstract class FootballnotificationPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future getPlatformVersion(
-      {List<int>? matchid, bool? goal, bool? card, bool? subset, String? token, List<int>? teamid, List<int>? season}) {
+  Future getPlatformVersion({
+    required List<int> matchid,
+    required bool goal,
+    required bool card,
+    required bool subset,
+    required String token,
+    required List<int> teamid,
+    required List<int> season,
+    required bool notification,
+    required bool matchstart,
+    required int time,
+  }) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

@@ -50,10 +50,9 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       var matchid : ArrayList<Int>? = call.argument("matchid")
       var teamid : ArrayList<Int>? = call.argument("teamid")
       var season : ArrayList<Int>? = call.argument("season")
-
-//      var intent: Intent = Intent();
+      var matchstart : Boolean? = call.argument("matchstart")
+      var time : Int? = call.argument("time")
       context = activity.applicationContext;
-
       if (isMyServiceRunning(Mybackground::class.java) == false){
         var service = Intent(context, Mybackground::class.java)
         service.putExtra("goal",goal);
@@ -63,6 +62,8 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("matchid",matchid);
         service.putExtra("teamid",teamid);
         service.putExtra("season",season);
+        service.putExtra("matchstart",matchstart);
+        service.putExtra("time",time);
 //        activity.startForegroundService(service)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           activity.startService(service)
@@ -79,6 +80,8 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
         service.putExtra("matchid",matchid);
         service.putExtra("teamid",teamid);
         service.putExtra("season",season);
+        service.putExtra("matchstart",matchstart);
+        service.putExtra("time",time);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           activity.startService(service)
         } else {
@@ -87,8 +90,9 @@ class FootballnotificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       }
 
 
-    } else {
-
+    } else if(call.method == "notificatonoff") {
+      var service = Intent(context, Mybackground::class.java)
+      activity.stopService(service);
     }
   }
 

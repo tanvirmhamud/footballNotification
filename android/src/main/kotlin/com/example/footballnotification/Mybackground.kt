@@ -27,6 +27,7 @@ import com.example.backgroundservice.Retrofit_heloer.Retrofithelper
 import com.example.footballnotification.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.async
 import java.sql.Date
 import java.sql.Timestamp
@@ -35,6 +36,7 @@ import kotlin.random.Random
 
 class Mybackground() : Service() {
     lateinit var  handler : Handler;
+    lateinit var runable : Runnable;
     var goal : Boolean = false;
     var card : Boolean = false;
     var subset : Boolean = false;
@@ -42,6 +44,9 @@ class Mybackground() : Service() {
     lateinit var matchid : ArrayList<Int>;
     lateinit var teamid : ArrayList<Int>;
     lateinit var season : ArrayList<Int>;
+    var matchstart : Boolean = true;
+    var time : Int = 3;
+
     var livematchdata = "livematchdata";
     lateinit var notificationManager: NotificationManager
     lateinit var notificationChannel: NotificationChannel
@@ -54,30 +59,45 @@ class Mybackground() : Service() {
     }
 
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(runable)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val context: Context = this
-        goal = intent!!.getBooleanExtra("goal", false);
-        card = intent!!.getBooleanExtra("card", false);
-        subset = intent!!.getBooleanExtra("subst", false);
+        goal = intent!!.getBooleanExtra("goal", true);
+        card = intent!!.getBooleanExtra("card", true);
+        subset = intent!!.getBooleanExtra("subst", true);
         token = intent!!.getStringExtra("token").toString();
         matchid = intent.getIntegerArrayListExtra("matchid") as ArrayList<Int>
         teamid = intent.getIntegerArrayListExtra("teamid") as ArrayList<Int>
         season = intent.getIntegerArrayListExtra("season") as ArrayList<Int>
-        println("${goal} ${token} ${matchid} ${teamid} ${season}")
+        matchstart = intent.getBooleanExtra("matchstart",true)
+        time = intent.getIntExtra("time",3);
+        println("${goal} ${token} ${matchid} ${teamid} ${season} ${matchstart} ${time}")
         var t = 0
         handler = Handler();
-        handler.postDelayed(object : Runnable {
-            override fun run() {
+        runable = object: Runnable {
+                        override fun run() {
                 CoroutineScope(Dispatchers.Main).async {
                     counter();
                 }
                 t++
                 handler.postDelayed(this, 10000)
             }
-        }, 10000)
+        }
+//        var runable = new Runnable {
+//            override fun run() {
+//                CoroutineScope(Dispatchers.Main).async {
+//                    counter();
+//                }
+//                t++
+//                handler.postDelayed(this, 10000)
+//            }
+//        }
+        handler.postDelayed( runable , 10000)
 
         val CHANNELID = "Foreground Service ID"
         val channel = NotificationChannel(
@@ -130,7 +150,7 @@ class Mybackground() : Service() {
                         Retrofithelper.getInstance().create(Livematchinterface::class.java)
                     var result = quotesApi.getQuotes("id=${ids}", token).body();
                     var job2 = CoroutineScope(Dispatchers.Main).async {
-                        if (result!!.first().fixture.status.short == "NS"){
+                        if (result!!.first().fixture.status.short == "NS" && matchstart){
                             matchstartnotification(result!!.first())
                         }
                         if (result!!.first().events.isNotEmpty()) {
@@ -148,7 +168,7 @@ class Mybackground() : Service() {
                     var result = quotesApi.getteamfixture("${teamid[ids]}","${season[ids]}",token).body();
                     var job2 = CoroutineScope(Dispatchers.Main).async {
                         for (i in result!!){
-                            if (i.fixture.status.short == "NS"){
+                            if (i.fixture.status.short == "NS" && matchstart){
                                 matchstartnotification(i)
                             }
                         }
@@ -245,7 +265,7 @@ class Mybackground() : Service() {
         var id : String = "${livematch.fixture.id}";
 
         var type = "${livematch.teams.home.name} vs ${livematch.teams.away.name}";
-        if (minutes < 3 && minutes > 0 && (getsavedata(id) == null || getsavedata(id) != "${livematch.fixture.timestamp}")) {
+        if (minutes < time && minutes > 0 && (getsavedata(id) == null || getsavedata(id) != "${livematch.fixture.timestamp}")) {
             var details = "Live Now: ${matchdate.toLocaleString()}"
             createNotificationChannel("⚽️ $type",details,livematch.league.logo,leagename,matchid,teama, teamb, teamaname, teambname, season);
             savedata(id, "${livematch.fixture.timestamp}")
